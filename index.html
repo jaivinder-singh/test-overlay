@@ -27,223 +27,50 @@ var clientConfig = {
  <body>
  
 <p>Hello </p>
+
+  <div class="chat-overlay chat-overlay-closed">
+     <div class="chat-overlay-banner">
+        <div class="chat-overlay-banner-title">Amelia</div>
+        <div class="chat-overlay-banner-helper">Virtual Assistant</div>
+        <div class="chat-overlay-banner-description">Hello, I am Amelia. How can I help you today? If this is a medical emergency, please call 911 or report to your local emergency room.</div>
+    </div>
+    <div class="header-logo">
+       <img class="logo" alt="logo" />
+        <!-- <img class="chat-overlay-close" src="./close.png" alt="toggle chat overlay" /> -->
+        <svg class="chat-overlay-close" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="4" y1="4" x2="20" y2="20" stroke="#003592" stroke-width="3"></line>
+          <line x1="20" y1="4" x2="4" y2="20" stroke="#003592" stroke-width="3"></line>
+        </svg>
+</div>
+<div class="chat-overlay">
+<div class="chat-overlay-wrapper">
+      <div class="chat-overlay-header-mobile chat-overlay-close">
+        <img class="logo" alt="logo" />
+        <!-- <img class="chat-overlay-close" src="/close.png" alt="toggle chat overlay" /> -->
+        <svg class="chat-overlay-close" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="1" y1="1" x2="40" y2="40" stroke="#003592" stroke-width="4"></line>
+          <line x1="40" y1="1" x2="1" y2="40" stroke="#003592" stroke-width="4"></line>
+        </svg>
+      </div>
+      <iframe id="<iframe
+          id="receiver"
+          src="https://adviacu.dev.amelia.com/Amelia/ui/advia_external/chat?domainCode=adviacu_customerfacing_dev"
+          frameborder="0"
+          width="100%"
+          height="100%"
+          allow="geolocation; microphone; camera"
+          onload=""
+        >
+          <p>Your browser does not support iframes.</p>
+        </iframe>" class="chat-overlay-close" frameborder="0" width="100%" height="100%" allow="geolocation; microphone; camera">
+        <p>Your browser does not support iframes.</p>
+      </iframe>
+      <div class="chat-overlay-header">
+        <img class="chat-overlay-header-img chat-overlay-close" alt="toggle chat overlay" />
+        <img class="chat-overlay-header-img chat-overlay-open" alt="toggle chat overlay" />
+      </div>
+    </div>
+</div
   </body>
- <script>
-    var isInit = false;
-    var chatOverlayDefaultStateOpen = false;
-  
-    function Config (config) {
-      this.header = config.header || {};
-      this.openCloseContainer = config.openCloseContainer || {};
-      this.openOnLoad = config.openOnLoad || false;
-      this.iframeSrc = config.iframeSrc || '';
-      this.banner = {
-        title: config.banner && config.banner.title || '',
-        helper: config.banner && config.banner.helper || '',
-        description: config.banner && config.banner.description || ''
-      };
-      this.dragAndDropChatOverlay = config.dragAndDropChatOverlay;
-    }
-  
-    Config.prototype = {
-      setConfig: function () {
-        var styles = [];
-        if (this.header.backgroundImage) {
-          var headerLogo = document.querySelector('.header-logo img.logo');
-          headerLogo.src = this.header.backgroundImage;
-          var chatOverlayHeaderMobile = document.querySelector('.chat-overlay-wrapper .chat-overlay-header-mobile img.logo');
-          chatOverlayHeaderMobile.src = this.header.backgroundImage;
-        }
-  
-        if (this.header.backgroundColor) {
-          styles.push('.header-logo { display: flex; background-color: ' + this.header.backgroundColor + '}');
-          styles.push('.chat-overlay-wrapper .chat-overlay-header-mobile { background-color: ' + this.header.backgroundColor + '}');
-        }
-  
-        if (this.openCloseContainer.backgroundColor) {
-          styles.push('.chat-overlay-header { background-color: ' + this.openCloseContainer.backgroundColor + '}');
-        }
-  
-        if (this.openCloseContainer.openIconSrc) {
-          var openIconSrc = document.querySelector('.chat-overlay-header .chat-overlay-open');
-          openIconSrc.src = this.openCloseContainer.openIconSrc;
-        }
-  
-        if (this.openCloseContainer.closeIconSrc) {
-          var closeIconSrc = document.querySelector('.chat-overlay-header .chat-overlay-close');
-          closeIconSrc.src = this.openCloseContainer.closeIconSrc;
-        }
-  
-        if (this.openOnLoad) {
-          chatOverlayDefaultStateOpen = true;
-        }
-  
-        if (this.banner.title && this.banner.helper && this.banner.description) {
-          styles.push('.chat-overlay-banner { display: block; }');
-          styles.push('.chat-overlay-closed { height: 210px; }');
-          var chatOverlayBanner = document.querySelector('.chat-overlay-banner');
-          chatOverlayBanner.children[0].innerHTML = this.banner.title;
-          chatOverlayBanner.children[1].innerHTML = this.banner.helper;
-          chatOverlayBanner.children[2].innerHTML = this.banner.description;
-        }
-  
-        if (styles.length) {
-          var stylesElem = document.createElement('style');
-          stylesElem.innerHTML = styles.join(' ');
-          document.body.appendChild(stylesElem);
-        }
-  
-        if (this.dragAndDropChatOverlay) {
-          var container = document.querySelector("body");
-          container.addEventListener("touchstart", dragStart, false);
-          container.addEventListener("touchend", dragEnd, false);
-          container.addEventListener("touchmove", drag, false);
-  
-          container.addEventListener("mousedown", dragStart, false);
-          container.addEventListener("mouseup", dragEnd, false);
-          container.addEventListener("mousemove", drag, false);
-        }
-      }
-    }
-  
-    var config = new Config(clientConfig);
-    config.setConfig();
-  
-    function init () {
-      document.getElementById('receiver').src = config.iframeSrc;
-      isInit = true;
-    }
-       
-    function openChatOverlay (receiverElem, imgElemOpen, imgElemClose) {
-      if (!isInit) {
-        init();
-      }
-      document.getElementById('receiver').classList.add("chat-overlay-open");
-      document.getElementById('receiver').classList.remove("chat-overlay-close");
-      document.getElementsByClassName('chat-overlay')[0].classList.add("chat-overlay-open");
-      document.getElementsByClassName('chat-overlay')[0].classList.remove("chat-overlay-closed");
-      document.getElementsByClassName('chat-overlay-header-mobile')[0].classList.remove('chat-overlay-close');
-      document.getElementsByClassName('chat-overlay-banner')[0].classList.add('chat-overlay-close');
-      if (imgElemClose) imgElemClose.style.opacity = 1;
-      if (imgElemOpen) imgElemOpen.style.opacity = 0;
-      localStorage.setItem('chatOverlayOpen', true);
-    }
-     
-    function closeChatOverlay (receiverElem, imgElemOpen, imgElemClose) {
-      document.getElementById('receiver').classList.add("chat-overlay-close");
-      document.getElementById('receiver').classList.remove("chat-overlay-open");
-      document.getElementsByClassName('chat-overlay')[0].classList.add("chat-overlay-closed");
-      document.getElementsByClassName('chat-overlay')[0].classList.remove("chat-overlay-open");
-      document.getElementsByClassName('chat-overlay-header-mobile')[0].classList.add('chat-overlay-close');
-      document.getElementsByClassName('chat-overlay-banner')[0].classList.remove('chat-overlay-close');
-      if (imgElemOpen) imgElemOpen.style.opacity = 1;
-      if (imgElemClose) imgElemClose.style.opacity = 0;
-      localStorage.setItem('chatOverlayOpen', false);
-    }
-     
-    function toggleChatOverlay () {
-      /**
-       * Toggles opening and closing of the chatOverlay
-       * @returns - no return
-       */
-      var chatOverlayHeaderImgElemOpen = document.getElementsByClassName('chat-overlay-header-img chat-overlay-open')[0];
-      var chatOverlayHeaderImgElemClose = document.getElementsByClassName('chat-overlay-header-img chat-overlay-close')[0];
-      var receiverElem = document.getElementById('receiver');
-      if (receiverElem.classList.contains('chat-overlay-close')) {
-        openChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-      } else {
-        closeChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-      }
-    }
-     
-    var chatOverlayHeaderElem = document.getElementsByClassName('chat-overlay-header')[0];
-    chatOverlayHeaderElem.addEventListener('click', toggleChatOverlay);
-    var chatOverlayHeaderElemMobile = document.getElementsByClassName('chat-overlay-header-mobile')[0];
-    chatOverlayHeaderElemMobile.addEventListener('click', toggleChatOverlay);
-    var chatOverlayHeaderLogoClose = document.querySelector('.header-logo img.chat-overlay-close');
-    if (chatOverlayHeaderLogoClose) chatOverlayHeaderLogoClose.addEventListener('click', closeChatOverlay);
-    if (chatOverlayHeaderLogoClose) chatOverlayHeaderLogoClose.addEventListener('click', toggleChatOverlay);
-    var chatOverlayHeaderLogoSvgClose = document.querySelector('.header-logo svg.chat-overlay-close');
-    if (chatOverlayHeaderLogoSvgClose) chatOverlayHeaderLogoSvgClose.addEventListener('click', toggleChatOverlay);
-     
-     
-    if (typeof(Storage) !== "undefined") {
-      var chatOverlayOpen = localStorage.getItem('chatOverlayOpen');
-      var chatOverlayHeaderImgElemOpen = document.getElementsByClassName('chat-overlay-header-img chat-overlay-open')[0];
-      var chatOverlayHeaderImgElemClose = document.getElementsByClassName('chat-overlay-header-img chat-overlay-close')[0];
-      var receiverElem = document.getElementById('receiver');
-      if (chatOverlayOpen && localStorage.getItem('chatOverlayOpen') === "false")  {
-        closeChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-      } else if (chatOverlayOpen && localStorage.getItem('chatOverlayOpen') === "true" || chatOverlayDefaultStateOpen) {
-        openChatOverlay(receiverElem, chatOverlayHeaderImgElemOpen, chatOverlayHeaderImgElemClose);
-      }
-    } else {
-        // Sorry! No Web Storage support..
-      console.log('No localStorage support')
-    }
-  
-    //START of Chat Overlay drag and drop
-    var dragItem = document.querySelector(".chat-overlay");
-    var touchItem = document.querySelector(".chat-overlay-header-img.chat-overlay-open");
-    var chatOverlayWrapper = document.querySelector('.chat-overlay-wrapper');
-  
-    var active = false;
-    var currentX;
-    var currentY;
-    var initialX;
-    var initialY;
-    var xOffset = 0;
-    var yOffset = 0;
-  
-    function dragStart(e) {receiverElemContentWindow       dragged = false;
-      if (e.type === "touchstart") {
-        initialX = e.touches[0].clientX - xOffset;
-        initialY = e.touches[0].clientY - yOffset;
-      } else {
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
-      }
-  
-      if (e.target === touchItem) {
-        active = true;
-      }
-    }
-  
-    function dragEnd(e) {
-      initialX = currentX;
-      initialY = currentY;
-  
-      active = false;
-      const bodyBound = document.body.getBoundingClientRect();
-      const chatOverlayHeaderBound = document.getElementsByClassName('chat-overlay-header')[0].getBoundingClientRect();
-      const center = {
-        x: chatOverlayHeaderBound.x + chatOverlayHeaderBound.width/2,
-        y: chatOverlayHeaderBound.y + chatOverlayHeaderBound.height/2
-      };
-    }
-  
-    function drag(e) {
-      if (active) {
-        e.preventDefault();
-  
-        dragged = true;
-        if (e.type === "touchmove") {
-          currentX = e.touches[0].clientX - initialX;
-          currentY = e.touches[0].clientY - initialY;
-        } else {
-          currentX = e.clientX - initialX;
-          currentY = e.clientY - initialY;
-        }
-  
-        xOffset = currentX;
-        yOffset = currentY;
-        setTranslate(currentX, currentY, dragItem);
-      }
-    }
-  
-    function setTranslate(xPos, yPos, el) {
-      el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-    }
-    /// END of Chat Overlay drag and drop
-</script>
+
 </html>
